@@ -39,6 +39,9 @@
                                                 <constraint firstAttribute="height" constant="30" id="vtO-L5-nx1"/>
                                             </constraints>
                                             <state key="normal" image="inprogress"/>
+                                            <connections>
+                                                <action selector="ChangeStatus:" destination="TGk-21-sia" eventType="touchUpInside" id="NFv-6N-Yfo"/>
+                                            </connections>
                                         </button>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nKH-oK-N1F">
                                             <rect key="frame" x="140" y="61" width="183" height="19"/>
@@ -113,6 +116,9 @@
                                     <segment title="Sports"/>
                                 </segments>
                                 <color key="tintColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="ChangeImage:" destination="BYZ-38-t0r" eventType="valueChanged" id="8Su-A7-Jlb"/>
+                                </connections>
                             </segmentedControl>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="a3T-Gl-iLE">
                                 <rect key="frame" x="67.5" y="316" width="240" height="240"/>
@@ -138,15 +144,21 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Task Detail" id="XKd-Rd-OF3">
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="dgQ-jW-c4e"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="dgQ-jW-c4e">
+                            <connections>
+                                <segue destination="gwR-d8-PwT" kind="unwind" unwindAction="SaveTaskWithUnwind:" id="vKb-Tm-9oS"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="btSave" destination="dgQ-jW-c4e" id="H6y-ps-hsh"/>
                         <outlet property="imCategory" destination="a3T-Gl-iLE" id="80t-tU-cUk"/>
-                        <outlet property="lbTask" destination="vRS-UY-JEt" id="YcF-lU-XYL"/>
                         <outlet property="scCategory" destination="1QK-2m-2WA" id="kVP-0R-T0e"/>
+                        <outlet property="tfTask" destination="vRS-UY-JEt" id="YcF-lU-XYL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <exit id="gwR-d8-PwT" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1076" y="132.68365817091455"/>
         </scene>
@@ -173,6 +185,6 @@
         <image name="inprogress" width="80" height="60"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="CXx-vn-ilh"/>
+        <segue reference="Lif-Aa-m1L"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -9,5 +9,15 @@
 import UIKit
 
 class Task: NSObject {
+    
+    var task: String
+    var category: String
+    var status: Bool
+    
+    init(task: String, category: String, status: Bool) {
+        self.task = task
+        self.category = category
+        self.status = status
+    }
 
 }

@@ -8,19 +8,58 @@
 
 import UIKit
 
+protocol ChangeStatusProtocol {
+    func ChangeStatusTableVC(_ sender: TableViewCell)
+}
+
 class TableViewCell: UITableViewCell {
     
     @IBOutlet weak var btState: UIButton!
     @IBOutlet weak var lbTask: UILabel!
     @IBOutlet weak var imCategory: UIImageView!
     
+    var status: Bool!
+    var delegate: ChangeStatusProtocol?
+   
+    
+    @IBAction func ChangeStatus(_ sender: UIButton) {
+    
+        if status {
+            btState.setImage(UIImage(named: "inprogress"), for: .normal)
+            
+        } else {
+            btState.setImage(UIImage(named: "completed"), for: .normal)
+        }
+        status = !status
+        delegate?.ChangeStatusTableVC(self)
+    }
+    
+    
 }
 
 
-class TableViewController: UITableViewController {
+class TableViewController: UITableViewController, ChangeStatusProtocol {
+    
+    func ChangeStatusTableVC(_ sender: TableViewCell) {
+        let indexPath = tableView.indexPath(for: sender)
+        arrTasks[indexPath!.row].status = sender.status
+    }
+    
 
+    var arrTasks = [Task]()
+    var task: String!
+    var category: String!
+    var option : Bool!
+    var currentRow = 0
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        arrTasks.append(Task(task: "Hacer el Proyecto de Swift", category: "homework", status: false))
+        arrTasks.append(Task(task: "Correr un 10K", category: "sports", status: false))
+        
+        self.navigationItem.rightBarButtonItem = self.editButtonItem
 
     }
 
@@ -30,14 +69,14 @@ class TableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of sections
         
         // TODO: Cambiar el número de secciones
-        return 0
+        return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         
         // TODO: Cambiar la cantidad de renglones en el TableView
-        return 0
+        return arrTasks.count
     }
 
     
@@ -46,7 +85,20 @@ class TableViewController: UITableViewController {
 
         // Configure the cell...
         // TODO: Definir lo que va en cada renglón
-
+        cell.lbTask.text = arrTasks[indexPath.row].task
+        
+        cell.imCategory.image = UIImage(named: arrTasks[indexPath.row].category)
+        
+        if arrTasks[indexPath.row].status {
+            cell.btState.setImage(UIImage(named: "completed"), for: .normal)
+        } else {
+            cell.btState.setImage(UIImage(named: "inprogress"), for: .normal)
+        }
+        
+        cell.status = arrTasks[indexPath.row].status
+        
+        cell.delegate = self
+    
         return cell
     }
     
@@ -54,6 +106,8 @@ class TableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // TODO: Agregar funcionalidad para borrar un renglón
+            arrTasks.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
             
         } else if editingStyle == .insert {
             
@@ -64,6 +118,11 @@ class TableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
 
         // TODO: Hacer lo necesario para cambiar los renglones de lugar
+        
+        var tempTask : Task
+        tempTask = arrTasks[fromIndexPath.row]
+        arrTasks[fromIndexPath.row] = arrTasks[to.row]
+        arrTasks[to.row] = tempTask
         
     }
     
@@ -82,6 +141,37 @@ class TableViewController: UITableViewController {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
         // TODO: Crear el código para presentar la pantalla de detalle para agregar y editar
+        
+        if segue.identifier == "task edit" {
+            let taskVC = segue.destination as! ViewController
+            let indexPath = tableView.indexPathForSelectedRow
+            taskVC.task = arrTasks[indexPath!.row].task
+            taskVC.category = arrTasks[indexPath!.row].category
+            taskVC.option = true
+            currentRow = indexPath!.row
+            //print(currentRow)
+            
+        } else {
+            if segue.identifier == "task add" {
+                let taskVC = segue.destination as! ViewController
+                taskVC.option = false
+                taskVC.task = ""
+                taskVC.category = "homework"
+                
+            }
+        }
+        
+        
+    }
+    
+    @IBAction func SaveTask(unwind: UIStoryboardSegue) {
+        if option {
+            arrTasks[currentRow].task = task
+            arrTasks[currentRow].category = category
+        } else {
+            arrTasks.append(Task(task: task, category: category, status: false))
+        }
+        tableView.reloadData()
     }
     
 
